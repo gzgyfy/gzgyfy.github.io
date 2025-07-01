@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>确认书</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "仿宋", "FangSong", "SimSun", serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.8;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 60px;
+            padding-top: 80px;
+        }
+
+        /* 顶部信息栏 - 屏幕显示 */
+        .header-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .timestamp {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .title {
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* 打印按钮 */
+        .print-button {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background-color: #1a5fb4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            background-color: #0d4a9e;
+        }
+
+        /* 新增：返回主页按钮样式，与打印按钮对称 */
+        .home-button {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            background-color: #1a5fb4;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            z-index: 1000;
+        }
+
+        .home-button:hover {
+            background-color: #0d4a9e;
+        }
+
+        /* 主体内容区 */
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content p {
+            text-indent: 2em;
+            margin-bottom: 15px;
+            line-height: 2;
+            text-align: justify;
+            font-size: 16px;
+        }
+
+        .content h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        /* 底部信息栏 - 屏幕显示 */
+        .footer-screen {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .source-path {
+            font-size: 13px;
+            color: #555;
+            max-width: 70%;
+            white-space: nowrap;
+            overflow-wrap: break-word;
+            hyphens: manual;
+        }
+
+        @media print {
+            .source-path {
+                max-width: 60%;
+                white-space: nowrap;
+                overflow-wrap: break-word;
+                word-break: break-all;
+                margin-right: 2em;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            body {
+                padding: 0;
+                background: none;
+            }
+
+            .header-screen, .footer-screen, .print-button, .home-button {
+                display: none;
+            }
+
+            .content {
+                padding: 0;
+                margin: 0;
+                max-width: 100%;
+                box-shadow: none;
+            }
+
+            /* 页眉 */
+            @page {
+                margin: 2cm 2cm 2.5cm 2cm;
+
+                @top-left {
+                    content: counter(author) " | " counter(date);
+                    font-size: 12px;
+                    color: #333;
+                    vertical-align: bottom;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid #ccc; /* 页眉分割线 */
+                }
+
+                @top-right {
+                    content: "案件记录";
+                    font-size: 14px;
+                    font-weight: bold;
+                    text-decoration: underline;
+                    vertical-align: bottom;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid #ccc; /* 页眉分割线 */
+                }
+
+                @bottom-left {
+                    content: "记录人：张三";
+                    font-size: 12px;
+                    color: #333;
+                    vertical-align: top;
+                    padding-top: 5px;
+                    white-space: pre-wrap;
+                    border-top: 1px solid #ccc; /* 页脚分割线 */
+                }
+
+                @bottom-right {
+                    content: "第" counter(page) "页 共" counter(pages) "页";
+                    font-size: 12px;
+                    color: #333;
+                    vertical-align: top;
+                    padding-top: 5px;
+                    border-top: 1px solid #ccc; /* 页脚分割线 */
+                }
+            }
+        }
+
+        /* 公文样式增强 */
+        .document-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 40px;
+        }
+
+        .signature p {
+            text-align: right;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .sub-section {
+            margin-left: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 600px) {
+            .content {
+                padding: 10px !important;
+                max-width: 100vw !important;
+                font-size: 15px;
+            }
+            .section, .sub-section {
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+            }
+            .document-title, .content h1 {
+                font-size: 18px !important;
+                padding-top: 10px !important;
+            }
+            .footer-screen, .header-screen {
+                padding: 6px 8px !important;
+                font-size: 13px !important;
+            }
+            .print-button {
+                top: 50px !important;
+                right: 10px !important;
+                padding: 4px 8px !important;
+                font-size: 12px !important;
+            }
+            .home-button {
+                top: 50px !important;
+                left: 10px !important;
+                padding: 4px 8px !important;
+                font-size: 12px !important;
+            }
+        }
+
+        /* 防止长文本溢出 */
+        .content, .section, .sub-section, .source-path {
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        /* 放在 setupPrintStyles 的 style.textContent 内 */
+        @media print {
+            .print-qrcode-container {
+                display: flex !important;
+                position: fixed !important;
+                right: 2.2cm !important;
+                bottom: -0.8cm !important; /* 负值让二维码紧贴页脚下方 */
+                z-index: 9999 !important;
+                width: auto !important;
+                height: auto !important;
+                pointer-events: none !important;
+                background: none !important;
+                box-shadow: none !important;
+                justify-content: flex-end !important;
+                align-items: flex-start !important;
+            }
+            .print-qrcode-img {
+                width: 48px !important;
+                height: 48px !important;
+                object-fit: contain !important;
+                background: #fff !important;
+                border: 1px solid #ccc !important;
+                border-radius: 4px !important;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+                margin: 0 !important;
+            }
+        }
+        @media screen {
+            .print-qrcode-container {
+                display: none !important;
+            }
+        }
+
+        .timeboard-normal {
+            color: #1a5fb4;
+            font-weight: bold;
+        }
+        .timeboard-warning {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .timeboard-danger {
+            color: #c0392b;
+            font-weight: bold;
+        }
+        .timeboard-info {
+            color: #16a085;
+            font-weight: bold;
+        }
+        .timeboard-bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部信息栏 - 屏幕显示 -->
+    <div class="header-screen">
+        <div class="timestamp" id="timestamp">2025年7月2日 20:58:58</div>
+        <div class="title" id="documentTitle">家属确认书</div>
+    </div>
+
+    <!-- 打印按钮 - 仅屏幕显示 -->
+    <button class="print-button" onclick="window.print()">打印</button>
+    <!-- 返回主页按钮 - 仅屏幕显示 -->
+    <button class="home-button" onclick="window.location.href='index.html'">返回主页</button>
+    <!-- 主体内容区 -->
+    <div class="content">
+        <h1 class="document-title" id="contentTitle">家属确认书</h1>
+
+        <div class="section">
+            <p style="text-align: right;">qrs2025_07_02</p>
+        </div>
+
+            <div class="section">
+                <div class="section-title">一、案件背景回顾：</div>
+            </div>
+
+            <div class="section">
+
+            <div class="sub-section"><p>案发时间是2019年1月20日18时30分许，王贵平被抓获时间是2019年1月20日19时许。滞留贵阳市云岩区毓秀路派出所近28小时后，于2019年1月21日22时50分被送至贵阳市云岩区看守所羁押。至此，王贵平被正式采取刑事拘留措施。2019年1月29日，王贵平被贵阳市云岩区人民检察院批准逮捕，由贵阳市公安局云岩分局执行逮捕，但该公安局未依法向家属送达《逮捕通知书》，法定至迟送达《逮捕通知书》期限为2019年1月30日。截至目前，贵阳市公安局云岩分局尚未向王贵平家属实际送达《刑事拘留通知书》和《逮捕通知书》。根据《中华人民共和国刑事诉讼法》第八十五条、第九十三条：</p></div>
+            <div class="sub-section">
+                <p>刑事拘留通知书法定至迟送达家属时限为2019年1月22日。</p>
+            </div>
+            <div class="sub-section" id="timeBoard"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">二、关于王贵平父亲未收到刑事拘留通知书和逮捕通知书问题的确认</div>
+            <div class="sub-section">
+                <p>我是王廷书，我儿子王贵平于2019年1月20日涉案，至今2025年7月2日，始终未收到《刑事拘留通知书》和《逮捕通知书》。我在此郑重声明：若有不实之处，愿承担法律责任。</p>
+                <p></p>
+                <p style="page-break-before: always;">详见视频</p>
+                <div style="text-align: right;">
+                    <div style="margin-bottom: 8px;">
+                        <span>陈述人：</span>
+                        <span style="display: inline-block; border-bottom: 1px solid #333; width: 140px; vertical-align: middle;">&nbsp;</span>
+                    </div>
+                    <div>
+                        <span>日&nbsp;&nbsp;期：</span>
+                        <span style="display: inline-block; border-bottom: 1px solid #333; width: 140px; vertical-align: bottom;">
+                            2025年7月2日
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">三、关于王贵平母亲未收到刑事拘留通知书和逮捕通知书问题的确认</div>
+            <div class="sub-section">
+                <p>我是罗顺琼，我儿子王贵平于2019年1月20日涉案，至今2025年7月2日，始终未收到《刑事拘留通知书》和《逮捕通知书》。我在此郑重声明：若有不实之处，愿承担法律责任。</p>
+                <p></p>
+                <p>详见视频</p>
+                <div style="text-align: right;">
+                    <div style="margin-bottom: 8px;">
+                        <span>陈述人：</span>
+                        <span style="display: inline-block; border-bottom: 1px solid #333; width: 140px; vertical-align: middle;">&nbsp;</span>
+                    </div>
+                    <div>
+                        <span>日&nbsp;&nbsp;期：</span>
+                        <span style="display: inline-block; border-bottom: 1px solid #333; width: 140px; vertical-align: bottom;">
+                            2025年7月2日
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">四、参考法律：</div>
+            <div class="sub-section">
+            <p>
+                <a href="http://gongbao.court.gov.cn/Details/11aaa996a59f5824912be62d3dfa0d.html?sw=" target="_blank" style="color:#1a5fb4;text-decoration:underline;">
+                    《中华人民共和国刑事诉讼法》
+                </a>
+            </p>
+            <p>&nbsp; &nbsp; &nbsp; &nbsp; <strong>第八十五条</strong>　公安机关拘留人的时候，必须出示拘留证。</p>
+            <p>&nbsp; &nbsp; &nbsp; &nbsp; 拘留后，应当立即将被拘留人送看守所羁押，至迟不得超过二十四小时。除无法通知或者涉嫌危害国家安全犯罪、恐怖活动犯罪通知可能有碍侦查的情形以外，应当在拘留后二十四小时以内，通知被拘留人的家属。有碍侦查的情形消失以后，应当立即通知被拘留人的家属。</p>
+            <p>&nbsp; &nbsp; &nbsp; &nbsp; <strong>第九十三条</strong>　公安机关逮捕人的时候，必须出示逮捕证。</p>
+            <p>&nbsp; &nbsp; &nbsp; &nbsp; 逮捕后，应当立即将被逮捕人送看守所羁押。除无法通知的以外，应当在逮捕后二十四小时以内，通知被逮捕人的家属。</p>
+           </div>
+
+        <!-- 底部信息栏 - 屏幕显示 -->
+    <div class="footer-screen">
+        <div class="source-path" id="sourcePath">来源：</div>
+    </div>
+
+    <script>
+        // 更新时间戳
+        function updateTimestamp() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            document.getElementById('timestamp').textContent =
+                `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+        }
+
+        // 动态设置来源路径（使用完整URL）
+        function setSourcePath() {
+            const fullUrl = window.location.href;
+            document.getElementById('sourcePath').textContent = `来源：${fullUrl}`;
+            return fullUrl;
+        }
+
+        // 动态设置文档标题
+        function setDocumentTitle() {
+            const title = "家属确认书";
+            document.getElementById('documentTitle').textContent = title;
+            document.getElementById('contentTitle').textContent = title;
+            return title;
+        }
+
+        // 时间看板配置
+        const timeBoardEvents = [
+            {
+                label: "刑事拘留通知书法定至迟送达日期为2019年1月22日，",
+                date: "2019-01-22",
+                type: "拘留"
+            },
+            {
+                label: "逮捕通知书法定至迟送达日期为2019年1月30日，",
+                date: "2019-01-30",
+                type: "逮捕"
+            }
+        ];
+
+        // 动态生成时间看板内容（北京时间）
+        function renderTimeBoard() {
+            const timeBoard = document.getElementById('timeBoard');
+            if (!timeBoard) return;
+
+            // 获取北京时间
+            const now = new Date();
+            // 北京时间 = UTC+8
+            const bjOffset = 8 * 60; // 分钟
+            const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+            const bjDate = new Date(utc + bjOffset * 60000);
+
+            // 格式化日期
+            const y = bjDate.getFullYear();
+            const m = (bjDate.getMonth() + 1).toString().padStart(2, '0');
+            const d = bjDate.getDate().toString().padStart(2, '0');
+            let html = `<p>然而、截至${y}年${m}月${d}日，王贵平家属依然没有收到本案王贵平的《刑事拘留通知书》和《逮捕通知书》，存在以下明显违法点：</p>`;
+
+            timeBoardEvents.forEach((event, idx) => {
+                const eventDate = new Date(event.date + "T00:00:00+08:00");
+                // 只比较日期部分
+                const today = new Date(`${y}-${m}-${d}T00:00:00+08:00`);
+                const diff = Math.ceil((today - eventDate) / (1000 * 60 * 60 * 24)); // 以法定送达日为基准
+                let status = "";
+                let colorClass = "";
+                let desc = "";
+                let overdue = 0;
+
+                if (diff < 0) {
+                    // 未到期
+                    const days = Math.abs(diff);
+                    if (days === 1) {
+                        status = "日程正常";
+                        colorClass = "timeboard-normal";
+                        desc = `还有<span class="timeboard-bold">${days}</span>天，<span class="${colorClass}">${status}</span>`;
+                    } else if (days <= 3) {
+                        status = "日程紧张";
+                        colorClass = "timeboard-warning";
+                        desc = `还有<span class="timeboard-bold">${days}</span>天，<span class="${colorClass}">${status}</span>`;
+                    } else {
+                        status = "日程宽裕";
+                        colorClass = "timeboard-info";
+                        desc = `还有<span class="timeboard-bold">${days}</span>天，<span class="${colorClass}">${status}</span>`;
+                    }
+                } else if (diff === 0) {
+                    status = "今日截止";
+                    colorClass = "timeboard-warning";
+                    desc = `今天截止，<span class="${colorClass}">${status}</span>`;
+                } else {
+                    // 已逾期
+                    overdue = diff;
+                    if(event.type==="拘留"){
+                        status = "贵阳市公安局云岩分局未按法律规定向王贵平家属实际送达《刑事拘留通知书》";
+                    }else{
+                        status = "贵阳市公安局云岩分局未按法律规定向王贵平家属实际送达《逮捕通知书》";
+                    }
+                    colorClass = "timeboard-danger";
+                    desc = `已过<span class="timeboard-bold">${overdue}</span>天，<span class="${colorClass}">${status}</span>`;
+                }
+
+                html += `<p>${idx + 1}、${event.label}${desc}</p>`;
+            });
+
+            timeBoard.innerHTML = html;
+        }
+
+        // 初始化
+        function init() {
+            updateTimestamp();
+            renderTimeBoard();
+            const path = setSourcePath().replace('jwx%E9%98%B2%E4%BC%AA%E6%A0%87%E8%AF%86.png', 'jsqsr.png');
+            const title = setDocumentTitle();
+
+            // 页面加载时就创建二维码容器
+            let qr = document.getElementById('print-qrcode');
+            if (!qr) {
+                qr = document.createElement('div');
+                qr.id = 'print-qrcode';
+                qr.className = 'print-qrcode-container';
+                qr.innerHTML = `
+                    <img class="print-qrcode-img" 
+                         src="https://tpzmn.github.io/images/jsqsr.png" 
+                         onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AkEEjQhJzVWJgAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAADElEQVQ4y2NgGAWjYBSMglEwCkbBKBgFowAAADgKARnQ9v4AAAAASUVORK5CYII='"
+                         alt="二维码">
+                `;
+                document.body.appendChild(qr);
+            }
+
+            setInterval(() => {
+                updateTimestamp();
+                renderTimeBoard();
+            }, 1000);
+            setupPrintStyles(title, path);
+
+            console.log('二维码容器已初始化');
+        }
+
+        // 设置打印样式
+        function setupPrintStyles(title, path) {
+            const oldStyle = document.getElementById('print-styles');
+            if (oldStyle) oldStyle.remove();
+
+            const style = document.createElement('style');
+            style.id = 'print-styles';
+            style.textContent = `
+                @media print {
+                    @page {
+                        margin: 2cm 2cm 2.5cm 2cm;
+                        size: A4;
+
+                        @top-left {
+                            content: "此时是：${document.getElementById('timestamp').textContent}";
+                            border-bottom: 1px solid #ccc !important;
+                            padding-bottom: 5px;
+                            vertical-align: bottom;
+                            font-size: 12px;
+                        }
+
+                        @top-right {
+                            content: "${title}";
+                            border-bottom: 1px solid #ccc !important;
+                            padding-bottom: 5px;
+                            vertical-align: bottom;
+                            font-size: 14px;
+                        }
+
+                        @bottom-left {
+                            content: "来源：${path}";
+                            border-top: 1px solid #ccc !important;
+                            padding-top: 5px;
+                            vertical-align: top;
+                            width: 60%;
+                            white-space: pre-wrap;
+                            font-size: 12px;
+                        }
+
+                        @bottom-right {
+                            content: "第" counter(page) "页 共" counter(pages) "页";
+                            border-top: 1px solid #ccc !important;
+                            padding-top: 5px;
+                            vertical-align: top;
+                            font-size: 12px;
+                        }
+                    }
+
+                    /* 二维码定位在页码正下方 */
+                    body {
+                        position: relative;
+                    }
+                    /* 定义打印二维码容器的样式 */
+                    .print-qrcode-container {
+                        display: flex !important;
+                        position: fixed !important;
+                        right: 1cm !important; /* 与页码右对齐 */
+                        bottom: 0.1cm !important; /* 紧贴页码下方 */
+                        z-index: 9999 !important;
+                        transform: translateX(50%); /* 水平居中于页码 */
+                    }
+                    /* 定义打印二维码图像的样式 */
+                    .print-qrcode-img {
+                        width: 48px !important;
+                        height: 44px !important;
+                        border: 1px solid #ccc !important;
+                        background: white !important;
+                        padding: 2px !important;
+                    }                }
+                /* 屏幕下二维码隐藏 */
+                @media screen {
+                    .print-qrcode-container {
+                        display: none !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            console.log('打印样式已设置');
+        }
+
+        // 打印前更新样式
+        window.onbeforeprint = function() {
+            console.log('打印前事件触发');
+            updateTimestamp();
+            const path = setSourcePath();
+            const title = setDocumentTitle();
+            setupPrintStyles(title, path);
+            
+            // 确保二维码显示
+            const qr = document.getElementById('print-qrcode');
+            if (qr) {
+                qr.style.display = 'flex';
+                console.log('二维码显示状态已设置');
+            }
+        };
+        
+        window.onafterprint = function() {
+            console.log('打印后事件触发');
+            const qr = document.getElementById('print-qrcode');
+            if (qr) qr.style.display = 'none';
+        };
+
+        // 初始化页面
+        window.onload = init;
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+/* 现代感十足的响应式主页样式，支持昼夜主题 */
+:root {
+  --primary: #1a5fb4;
+  --background: #f5f7fa;
+  --foreground: #fff;
+  --text: #222;
+  --header-bg: #fff;
+  --header-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  --button-bg: #1a5fb4;
+  --button-text: #fff;
+  --button-hover: #0d4a9e;
+  --border-radius: 8px;
+  --transition: 0.3s;
+}
+[data-theme="dark"] {
+  --primary: #4f8cff;
+  --background: #181c24;
+  --foreground: #23272f;
+  --text: #f5f7fa;
+  --header-bg: #23272f;
+  --header-shadow: 0 2px 8px rgba(0,0,0,0.24);
+  --button-bg: #4f8cff;
+  --button-text: #fff;
+  --button-hover: #1a5fb4;
+}
+body {
+  background: var(--background);
+  color: var(--text);
+  margin: 0;
+  font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans', 'Arial', sans-serif;
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+}
+.header {
+  background: var(--header-bg);
+  box-shadow: var(--header-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header .nav {
+  display: flex;
+  gap: 12px;
+}
+.header .nav-btn {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 8px 18px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.header .nav-btn:hover {
+  background: var(--button-hover);
+}
+.header .theme-toggle {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--primary);
+  margin-left: 16px;
+  transition: color var(--transition);
+}
+.main {
+  max-width: 900px;
+  margin: 40px auto 0 auto;
+  background: var(--foreground);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  padding: 40px 28px 32px 28px;
+  transition: background var(--transition);
+}
+.main h1 {
+  font-size: 2.2rem;
+  margin-bottom: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.main p {
+  font-size: 1.15rem;
+  margin-bottom: 18px;
+}
+.footer {
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  margin: 40px 0 10px 0;
+}
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 8px;
+    gap: 8px;
+  }
+  .main {
+    padding: 18px 6px 16px 6px;
+  }
+  .header .nav-btn {
+    font-size: 14px;
+    padding: 7px 10px;
+  }
+  .main h1 {
+    font-size: 1.3rem;
+  }
+}
