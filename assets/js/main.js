@@ -23,32 +23,62 @@ function renderNav(current) {
   });
 }
 
-// 主题切换
-function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-  document.getElementById('theme-toggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+// 全新主页脚本：动态时间戳、路径提示、主题切换、分享
+function updateTimestamp() {
+  const el = document.getElementById('timestamp');
+  if (!el) return;
+  const now = new Date();
+  const pad = n => n.toString().padStart(2, '0');
+  const str = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  el.textContent = str;
 }
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  setTheme(current === 'light' ? 'dark' : 'light');
-}
-function initTheme() {
-  const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  setTheme(saved);
-}
+setInterval(updateTimestamp, 1000);
 
 document.addEventListener('DOMContentLoaded', function() {
-  // 判断当前页面
-  const path = window.location.pathname;
-  const current = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
-  renderNav(current);
+  updateTimestamp();
+  // 路径提示
+  const pathMap = {
+    'index.html': '王UI平的主页',
+    'jsqrs.html': '确认书',
+    'about.html': '关于',
+    'contact.html': '联系'
+  };
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  const breadcrumb = document.getElementById('breadcrumb');
+  if (breadcrumb && pathMap[path]) breadcrumb.textContent = pathMap[path];
+  // 主题切换
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    document.getElementById('theme-toggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+  }
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    setTheme(current === 'light' ? 'dark' : 'light');
+  }
+  function initTheme() {
+    const saved = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(saved);
+  }
   initTheme();
   document.getElementById('theme-toggle').onclick = toggleTheme;
-  // 返回主页按钮
-  const homeBtn = document.getElementById('home-btn');
-  if (homeBtn && current !== 'index.html') {
-    homeBtn.style.display = 'inline-block';
-    homeBtn.onclick = () => { window.location.href = 'index.html'; };
-  }
+  // 分享功能
+  document.getElementById('share-btn').onclick = function() {
+    if (navigator.share) {
+      navigator.share({
+        title: document.title,
+        url: window.location.href
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('链接已复制，可手动分享');
+    }
+  };
+  // 高亮当前导航
+  const navLinks = document.querySelectorAll('.nav-btn');
+  navLinks.forEach(link => {
+    if (link.getAttribute('href') === path) {
+      link.classList.add('active');
+    }
+  });
 });
