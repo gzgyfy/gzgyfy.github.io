@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网站导航 - 王UI平的主页</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4655fe6d17340438c425cdb59915146d";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>
+  <style>
+    .tree-container {
+      max-width: 700px;
+      margin: 40px auto 0 auto;
+      background: var(--foreground);
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      padding: 36px 24px 28px 24px;
+      font-size: 1.08rem;
+      color: var(--text);
+    }
+    .tree ul {
+      list-style: none;
+      margin: 0 0 0 18px;
+      padding: 0 0 0 16px;
+      border-left: none;
+      position: relative;
+    }
+    .tree li {
+      margin: 0;
+      padding: 2px 0 2px 0;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .tree li::before {
+      content: '';
+      position: absolute;
+      left: -16px;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      border-left: 1.5px dashed #bbb;
+      z-index: 0;
+    }
+    .tree li:last-child::before {
+      height: 16px;
+    }
+    .tree ul > li:first-child::before {
+      top: 12px;
+    }
+    .tree ul > li:only-child::before {
+      display: none;
+    }
+    .tree li:hover {
+      background: var(--icon-hover);
+    }
+    .tree .icon {
+      width: 18px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+      font-size: 1.1em;
+    }
+    .tree .toggle {
+      width: 18px;
+      display: inline-block;
+      text-align: center;
+      cursor: pointer;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-right: 2px;
+      user-select: none;
+    }
+    .tree .toggle.invisible {
+      visibility: hidden;
+    }
+    .tree a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .tree a:hover {
+      color: var(--button-hover);
+      text-decoration: underline;
+    }
+    @media (max-width: 700px) {
+      .tree-container { padding: 12px 2px 10px 2px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="timestamp" id="timestamp"></div>
+      <div class="breadcrumb">你所在的位置：<span id="breadcrumb">网站导航</span></div>
+    </div>
+    <nav class="header-nav" id="nav">
+      <a href="Navigation.html" class="nav-btn active">导航</a>
+      <a href="index.html" class="nav-btn">主页</a>
+      <a href="jsqrs.html" class="nav-btn">确认书</a>
+      <a href="about.html" class="nav-btn">关于</a>
+      <a href="contact.html" class="nav-btn">联系</a>
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn" id="share-btn" title="分享"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+      <button class="icon-btn" id="theme-toggle" title="切换昼夜模式">☀️</button>
+    </div>
+  </header>
+  <main class="main">
+    <div class="tree-container">
+      <h1 style="font-size:1.4em;margin-bottom:18px;">网站导航</h1>
+      <div class="tree" id="file-tree"></div>
+    </div>
+  </main>
+  <footer class="footer">
+    &copy; 2025 王UI平 | 保留所有权利
+  </footer>
+  <script src="assets/js/main.js"></script>
+  <script>
+    // 文件树数据
+    const treeData = [
+      { name: 'favicon.ico', type: 'folder', children: [
+        { name: 'QR code_jsqrs.png', type: 'file', link: 'favicon.ico/QR code_jsqrs.png' },
+        { name: 'QR code_jsqrs.png.gpg', type: 'file', link: 'favicon.ico/QR code_jsqrs.png.gpg' }
+      ] },
+      { name: 'jsqrs.html', type: 'file', link: 'jsqrs.html' },
+      { name: 'about.html', type: 'file', link: 'about.html' },
+      { name: 'contact.html', type: 'file', link: 'contact.html' },
+      { name: 'index.html', type: 'file', link: 'index.html' },
+      { name: 'Navigation.html', type: 'file', link: 'Navigation.html' },
+      { name: 'README.md', type: 'file', link: 'README.md' },
+      { name: 'robots', type: 'folder', children: [] },
+      { name: 'assets', type: 'folder', children: [
+        { name: 'css', type: 'folder', children: [
+          { name: 'style.css', type: 'file', link: 'assets/css/style.css' }
+        ] },
+        { name: 'images', type: 'folder', children: [] },
+        { name: 'js', type: 'folder', children: [
+          { name: 'main.js', type: 'file', link: 'assets/js/main.js' }
+        ] }
+      ] }
+    ];
+    // 图标
+    const icons = {
+      folder: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="2" y="5" width="16" height="11" rx="2" fill="#f7c873" stroke="#e2a23a"/><path d="M2 7h16" stroke="#e2a23a"/></svg>',
+      file: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="4" y="3" width="12" height="14" rx="2" fill="#e2e8f0" stroke="#94a3b8"/><path d="M7 7h6M7 10h6M7 13h4" stroke="#64748b"/></svg>',
+      web: `<svg class="icon" viewBox="0 0 20 20" width="18" height="18" fill="none"><circle cx="10" cy="10" r="8.5" stroke="#2196f3" stroke-width="1.5" fill="#e3f2fd"/><ellipse cx="10" cy="10" rx="7" ry="3.5" stroke="#2196f3" stroke-width="1.1" fill="none"/><ellipse cx="10" cy="10" rx="3.5" ry="7" stroke="#2196f3" stroke-width="1.1" fill="none"/><rect x="4.5" y="8.2" width="11" height="3.6" rx="1.2" fill="#fff" stroke="#2196f3" stroke-width="0.7"/><text x="6.2" y="11.2" font-size="4.2" fill="#2196f3" font-family="Arial" font-weight="bold">WWW</text></svg>`,
+      image: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="3" y="4" width="14" height="12" rx="2" fill="#e0f2fe" stroke="#38bdf8"/><circle cx="7" cy="8" r="1.5" fill="#38bdf8"/><path d="M4 15l4-5 3 4 3-3 2 4" stroke="#38bdf8" stroke-width="1.2" fill="none"/></svg>',
+      code: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="3" y="3" width="14" height="14" rx="2" fill="#f1f5f9" stroke="#6366f1"/><path d="M8 8l-2 2 2 2M12 8l2 2-2 2" stroke="#6366f1" stroke-width="1.2" fill="none"/></svg>',
+      md: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="3" y="3" width="14" height="14" rx="2" fill="#fef9c3" stroke="#eab308"/><text x="6" y="14" font-size="7" fill="#eab308" font-family="Arial">MD</text></svg>',
+      zip: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="3" y="3" width="14" height="14" rx="2" fill="#fef2f2" stroke="#ef4444"/><path d="M10 6v8M8 8h4M8 10h4M8 12h4" stroke="#ef4444"/></svg>',
+      gpg: '<svg class="icon" viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="3" y="3" width="14" height="14" rx="2" fill="#ede9fe" stroke="#a21caf"/><path d="M10 7a2 2 0 0 1 2 2v2a2 2 0 0 1-4 0V9a2 2 0 0 1 2-2z" fill="#a21caf"/><circle cx="10" cy="13.5" r="1" fill="#a21caf"/></svg>'
+    };
+    // 文件类型判断
+    function getFileIcon(name) {
+      const ext = name.split('.').pop().toLowerCase();
+      if (["png","jpg","jpeg","gif","bmp","svg","webp"].includes(ext)) return icons.image;
+      if (["html","md","js","css","json","ts","jsx","tsx"].includes(ext)) return icons.web;
+      if (["zip","rar","7z","tar","gz"].includes(ext)) return icons.zip;
+      if (["gpg","asc"].includes(ext)) return icons.gpg;
+      return icons.file;
+    }
+    // 递归渲染树
+    function renderTree(data, parent, level=0) {
+      const ul = document.createElement('ul');
+      data.forEach(item => {
+        const li = document.createElement('li');
+        // 文件夹
+        if (item.type === 'folder') {
+          const toggle = document.createElement('span');
+          toggle.className = 'toggle';
+          toggle.textContent = item.children && item.children.length ? '▸' : '';
+          if (!item.children || !item.children.length) toggle.classList.add('invisible');
+          li.appendChild(toggle);
+          li.innerHTML += icons.folder + '<span>' + item.name + '</span>';
+          if (item.children && item.children.length) {
+            const childUl = renderTree(item.children, li, level+1);
+            childUl.style.display = 'none';
+            toggle.onclick = function(e) {
+              e.stopPropagation();
+              if (childUl.style.display === 'none') {
+                childUl.style.display = 'block';
+                toggle.textContent = '▾';
+              } else {
+                childUl.style.display = 'none';
+                toggle.textContent = '▸';
+              }
+            };
+            li.appendChild(childUl);
+            li.onclick = function(e) { e.stopPropagation(); toggle.onclick(e); };
+          }
+        } else {
+          // 文件
+          li.innerHTML = getFileIcon(item.name) + `<a href="${item.link}" target="_blank">${item.name}</a>`;
+        }
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+    document.getElementById('file-tree').appendChild(renderTree(treeData));
+  </script>
+</body>
+</html>
